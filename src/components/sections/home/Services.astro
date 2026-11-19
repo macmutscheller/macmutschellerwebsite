@@ -1,0 +1,42 @@
+---
+// components
+import Container from "../../elements/Container.astro";
+import Heading from "../../elements/Heading.astro";
+import Dropdown from "../../elements/Dropdown.astro";
+import ContainerBottom from "../../elements/ContainerBottom.astro";
+
+// content
+const services = [
+    { 
+        title: "Scoring To Picture",
+        text: "Hitting the most important moments of a film in sync - Going subtle to let other things shine - Blasting a room with sound when it´s my turn"
+    },
+    { 
+        title: "Cinematic Mixes",
+        text: "A balanced but juicy sound - flawless stems mixed for stereo or dolby atmos"
+    },
+    { 
+        title: "Game Music",
+        text: "Vertical and horizontal composing, seemless loops - Wwise knowledge for music implementation"
+    },
+    { 
+        title: "Custom Sounds",
+        text: "Custom in-house recordings from the very beginning of a project"
+    },
+]
+---
+
+<Container variant={'md'}>
+    <Heading tagName="h2" tagSize="h2" class="text-center">Focused on:</Heading>
+    <div class="flex flex-col gap-4">
+        <Container class="flex flex-col gap-4 p-6 border-3 border-base-900">
+            {
+                services.map((service, index) => (
+                    <Dropdown title=`${index + 1}. ${service.title}` text={service.text} />  
+                ))
+            }       
+        </Container>
+        <ContainerBottom />    
+    </div>
+
+</Container>

@@ -1,0 +1,54 @@
+---
+// components
+import Container from "../../elements/Container.astro";
+import Heading from "../../elements/Heading.astro";
+import Work from "../../elements/Work.astro";
+import Link from "../../elements/Link.astro";
+
+// content collections
+import { getCollection } from "astro:content";
+const works = await getCollection("works");
+const featuredWorks = works.filter(work => work.data.isFeatured === true);
+
+// Erweiterte Hilfsfunktion für die Symbol-Zuordnung
+const getCategorySymbol = (cat: string) => {
+    switch (cat?.toLowerCase()) {
+        case 'scoring':
+            return '🎵';
+        case 'lumina':
+        case 'credits':
+        case 'showreel':
+            return '🎬';
+        case 'info':
+        case 'about':
+            return 'ℹ️';
+        case 'contact':
+        case 'connect':
+            return '✉️';
+        case 'design':
+            return '🎨';
+        case 'development':
+            return '💻';
+        default:
+            return cat;
+    }
+};
+---
+
+<Container variant={'lg'} class="items-center">
+    <Heading tagName="h2" tagSize="h2" class="text-center">
+        Skills & Credits 
+    </Heading>
+    <Container class="grid lg:grid-cols-2 grid-cols-1 gap-16">
+        {featuredWorks.map((work) => (
+            <Work 
+                slug={work.data.slug === "smart-speaker" ? "/contact" : work.data.slug}
+                featuredImage={work.data.featuredImage}
+                title={work.data.title}
+                info={work.data.info}
+                category={getCategorySymbol(work.data.category)}>
+            </Work>
+        ))
+        }
+    </Container>
+</Container>

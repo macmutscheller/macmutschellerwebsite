@@ -1,0 +1,195 @@
+---
+// Layout
+import Layout from "../../layouts/Layout.astro";
+
+// Styling
+import "../../styles/markdown.css";
+
+// Components
+import Container from "../../components/elements/Container.astro";
+import Heading from "../../components/elements/Heading.astro";
+import Text from "../../components/elements/Text.astro";
+import ImageContainer from "../../components/elements/ImageContainer.astro";
+import Link from "../../components/elements/Link.astro";
+
+// Routing
+import type { GetStaticPaths } from "astro";
+import { render } from "astro:content";
+import { getCollection } from "astro:content";
+
+// --- BILD-IMPORTS ---
+import tile1 from "../../content/images/lumina/alarum.png";
+import tile2 from "../../content/images/lumina/raelnew.jpg";
+import tile3 from "../../content/images/lumina/superman.jpg";
+import tile4 from "../../content/images/lumina/rythm flow.jpg";
+import tile5 from "../../content/images/lumina/dying light.jpg";
+import tile6 from "../../content/images/lumina/the swarm.png";
+import tile7 from "../../content/images/lumina/outpost3.jpg";
+import tile8 from "../../content/images/lumina/irobot.png";
+import tile9 from "../../content/images/lumina/alien encounters.png";
+import tile10 from "../../content/images/lumina/butchers.png";
+import tile11 from "../../content/images/lumina/wwe.png";
+import tile12 from "../../content/images/lumina/arcadian.jpg";
+import tile13 from "../../content/images/lumina/gone.jpg";
+import tile14 from "../../content/images/lumina/elm.jpg";
+import tile15 from "../../content/images/lumina/UFC.jpg";
+import tile16 from "../../content/images/lumina/meangirl.jpg";
+
+export const getStaticPaths = (async () => {
+    const works = await getCollection("works", ({data}) => !data.isDraft)
+    return works.map((work) => ({
+        params: {
+            page: work.data.slug,
+        },
+        props: {
+            work,
+        }
+    }));
+}) satisfies GetStaticPaths;
+
+const { work } = Astro.props;
+const { Content } = await render(work);
+const { title, info, category, description, featuredImage, youtubeVideoId, slug } = work.data;
+
+// Erweiterte Funktion, die Kategorien in Symbole übersetzt
+const getCategorySymbol = (cat: string) => {
+    switch (cat?.toLowerCase()) {
+        case 'scoring':
+            return '🎵';
+        case 'lumina':
+        case 'credits':
+        case 'showreel':
+            return '🎬';
+        case 'info':
+        case 'about':
+            return 'ℹ️';
+        case 'contact':
+        case 'connect':
+            return '✉️';
+        case 'design':
+            return '🎨';
+        case 'development':
+            return '💻';
+        default:
+            return cat;
+    }
+};
+
+const details = [
+    { heading: "Info", text: `${info}` },
+    { heading: "Category", customHtml: `<span class="text-[0.925em]">${getCategorySymbol(category)}</span>` }
+];
+
+const creditTiles = [
+    { title: "Alarum | Grindstone Entertainment Group", role: "Trailer", image: tile1.src },
+    { title: "Rael: The Alien Prophet | Netflix", role: "Underscore", image: tile2.src },
+    { title: "Superman & Lois | The CW ", role: "Trailer", image: tile3.src },
+    { title: "Rythm & Flow | Netflix", role: "Underscore", image: tile4.src },
+    { title: "Dying Light 2 Stay Human: The Walking Dead Bundle | Techland", role: "Event Trailer", image: tile5.src },
+    { title: "The Swarm | The CW", role: "Trailer", image: tile6.src },
+    { title: "Outpost Simulator | Mental Dreams", role: "Game OST", image: tile7.src },
+    { title: "I, Robot", role: "TV Spot", image: tile8.src },
+    { title: "Alien Encounters | Discovery", role: "Underscore", image: tile9.src },
+    { title: "Butchers of LA | SUNDANCE", role: "Underscore", image: tile10.src },
+    { title: "WWE RAW & SMACKDOWN", role: "Underscore, Event Trailer", image: tile11.src },
+    { title: "Arcadian Days | IMMERSIV GAMES", role: "Game OST", image: tile12.src },
+    { title: "GONE", role: "TV Spot", image: tile13.src },
+    { title: "The Real Murders on Elm Street | ID", role: "Underscore", image: tile14.src },
+    { title: "UFC | FX Network", role: "Event Trailer", image: tile15.src },
+    { title: "Mean Girl Murders | HBO Max", role: "Underscore", image: tile16.src }
+];
+---
+
+<Layout 
+    title={`Work - ${title}`}
+    description={description}
+>
+    <Container variant={'xl'} aria-label="Work Details" class="items-center">
+        <Heading tagName="h1" tagSize="h1" class="text-center">{title}</Heading>
+
+        {youtubeVideoId ? (
+            <div class="w-full md:max-w-4xl">
+                <div class="video-container">
+                    <iframe 
+                        src={`https://www.youtube-nocookie.com/embed/${youtubeVideoId}`} 
+                        title={title}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+        ) : slug !== "nourish-restaurant" ? (
+            <div class="w-full md:h-[600px] h-[300px]">
+                <ImageContainer src={featuredImage} alt={title} />
+            </div>
+        ) : null}
+
+        {slug !== "nourish-restaurant" && (
+            <div class="flex flex-col gap-7 md:grid md:grid-cols-2">
+                {
+                    details.map((detail) => (
+                        <div class="text-center">
+                            <Heading tagName="h2" tagSize="h4" class="mb-2">{detail.heading}</Heading>
+                            {detail.customHtml ? (
+                                <Text variant={'sm'} class="text-base-900" set:html={detail.customHtml}></Text>
+                            ) : (
+                                <Text variant={'sm'} class="text-base-900">{detail.text}</Text>
+                            )}
+                        </div>
+                    ))
+                }
+            </div>
+        )}
+        
+        <!-- Description + Content kommen zuerst -->
+        <div class="w-full md:max-w-3xl flex flex-col gap-2 text-base-900">
+            <p class="text-xl" set:html={description}></p>
+            <article class="markdown-content flex flex-col gap-1">
+                <Content />
+            </article>
+        </div>
+
+        <!-- KOLLAGE erst NACH dem Text -->
+        {slug === "lumina" && (
+            <div class="w-full md:max-w-4xl my-12">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {creditTiles.map((tile) => (
+                        <div class="relative group overflow-hidden rounded-xl shadow-lg aspect-[3/4] bg-base-900">
+                            <img 
+                                src={tile.image} 
+                                alt={tile.title}
+                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                loading="lazy"
+                            />
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                                <span class="text-sm uppercase tracking-wider text-yellow-400 font-bold mb-1 [text-shadow:_1px_1px_0_#000,_-1px_-1px_0_#000,_1px_-1px_0_#000,_-1px_1px_0_#000]">{tile.role}</span>
+                                <h3 class="text-white text-[1.3rem] font-bold">{tile.title}</h3>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        )}
+
+    </Container>
+</Layout>
+
+<style>
+  .video-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    border-radius: 0.75rem;
+  }
+
+  .video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+</style>

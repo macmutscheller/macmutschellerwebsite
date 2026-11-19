@@ -1,0 +1,23 @@
+---
+//assets
+import { Image } from "astro:assets";
+import symbol from "../../../assets/ui/symbolWhite.svg";
+
+// components
+import Text from "../../elements/Text.astro";
+
+// props
+const { title, contact } = Astro.props;
+---
+
+<div class="border-2 border-base-900 p-4 flex flex-col gap-4 w-full">
+    <div class="flex justify-between">
+        <Text variant={'lg'}>{title}</Text>
+        <Image src={symbol} alt="UI Symbol" />
+    </div>
+    <div class="h-px w-full border border-base-900"></div>
+    <div>
+        <!-- Um 7% verkleinert, bleibt dank whitespace-nowrap in einer Zeile -->
+        <p class="text-[15px] sm:text-[28px] md:text-[33.5px] font-medium whitespace-nowrap">{contact}</p>
+    </div>
+</div>
